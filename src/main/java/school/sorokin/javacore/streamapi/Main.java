@@ -32,12 +32,16 @@ public static void main(String[] args) {
                     n.getPrice().compareTo(new BigDecimal("150")) == 0)
             .collect(Collectors.toList());
 
+    //System.out.println(price150);
+
     //2. Здесь мы получили список заказов, с продуктами из категории "vegetables"
     List<Order> orderVegetables = customerList.stream()
             .flatMap(customer -> customer.getOrderds().stream())
             .filter(order -> order.getProducts().stream()
                     .anyMatch(product -> product.getCategory().equalsIgnoreCase("vegetables")))
             .collect(Collectors.toList());
+
+    //System.out.println(orderVegetables);
 
 
     //3. Здесь мы получаем список продуктов из категории meat, применяем скидку 10% и получаем сумму всех продуктов
@@ -48,6 +52,8 @@ public static void main(String[] args) {
             .map(meat -> meat.getPrice().multiply(new BigDecimal(0.9)))
             .reduce(BigDecimal::add);
 
+    //System.out.println(result);
+
     //4. Здесь получаем список продуктов, заказанных клиентом второго уровня между 01-июля-2025 и 01-августа-2025.
     List<Order> list = customerList.stream()
             .filter(customer -> customer.getLevel() == 2)
@@ -55,6 +61,8 @@ public static void main(String[] args) {
             .filter(time -> !time.getOrderDate().isBefore(LocalDate.of(2025, 7, 1))
                     && !time.getOrderDate().isAfter(LocalDate.of(2025, 8, 1)))
             .collect(Collectors.toList());
+
+    //System.out.println(list);
 
     //5. Получите топ 2 самые дешевые продукты из категории "fruits".
     List<Product> top2 = customerList.stream()
@@ -64,14 +72,14 @@ public static void main(String[] args) {
             .sorted(Comparator.comparing(Product::getPrice))
             .limit(2)
             .collect(Collectors.toList());
-    /*  System.out.println(top2);*/
+    //System.out.println(top2);
 
     //6. Получите 3 самых последних сделанных заказа.
     customerList.stream()
             .flatMap(customer -> customer.getOrderds().stream())
             .sorted(Comparator.comparing(Order::getOrderDate).reversed())
             .limit(3);
-    /*  .forEach(System.out::println);*/
+    //.forEach(System.out::println);
 
     //7. Получите список заказов, сделанных 12-августа-2025, выведите id заказов в консоль и затем верните
     //список их продуктов.
@@ -124,100 +132,102 @@ public static void main(String[] args) {
                 array[0] = array[0].add(product.getPrice());
                 intcount[0]++;
             });
-       /* if (count > 0) {
-            System.out.println(array[0].divide(new BigDecimal(count)));
-        }*/
-    //Ещё один вариант через Коллекторы
-    BigDecimal temp = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .filter(orderTime -> orderTime.getOrderDate().isEqual(LocalDate.of(2025, 8, 12)))
-            .flatMap(Order -> Order.getProducts().stream())
-            .collect(Collectors.teeing(
-                    Collectors.reducing(BigDecimal.ZERO, Product::getPrice, BigDecimal::add),
-                    Collectors.counting(),
-                    (sumtotal, total) -> total == 0 ? null : sumtotal.divide(new BigDecimal(total))
-            ));
+    if (count > 0) {
+        //  System.out.println(array[0].divide(new BigDecimal(count)));
 
-       /* if (temp != null) {
-            System.out.println(temp);
-        }*/
+        //Ещё один вариант через Коллекторы
+        BigDecimal temp = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .filter(orderTime -> orderTime.getOrderDate().isEqual(LocalDate.of(2025, 8, 12)))
+                .flatMap(Order -> Order.getProducts().stream())
+                .collect(Collectors.teeing(
+                        Collectors.reducing(BigDecimal.ZERO, Product::getPrice, BigDecimal::add),
+                        Collectors.counting(),
+                        (sumtotal, total) -> total == 0 ? null : sumtotal.divide(new BigDecimal(total))
+                ));
 
-    // 10. Получите набор статистических данных (сумма, среднее, максимум, минимум, количество) для всех
-    //продуктов категории "dairy".
-    DoubleSummaryStatistics statictic = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .flatMap(order -> order.getProducts().stream())
-            .filter(product -> product.getCategory().equalsIgnoreCase("dairy"))
-            .mapToDouble(getPrice -> getPrice.getPrice().doubleValue())
-            .summaryStatistics();
+        if (temp != null) {
+            //   System.out.println(temp);
+        }
+
+        // 10. Получите набор статистических данных (сумма, среднее, максимум, минимум, количество) для всех
+        //продуктов категории "dairy".
+        DoubleSummaryStatistics statictic = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .flatMap(order -> order.getProducts().stream())
+                .filter(product -> product.getCategory().equalsIgnoreCase("dairy"))
+                .mapToDouble(getPrice -> getPrice.getPrice().doubleValue())
+                .summaryStatistics();
   /*      System.out.println("Сумма=" + statictic.getSum() + ", " +
         "Среднее=" + statictic.getAverage() + ", " + "Максимум=" + statictic.getMax() + ", "
         + "Минимум=" + statictic.getMin() + ", " + "Количество=" + statictic.getCount());*/
 
-    //  11. Получите данные Map<Long, Integer> → key - id заказа, value - кол-во товаров в заказе
-    Map<Long, Integer> countMap = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .collect(Collectors.toMap(
-                    key -> key.getId(),
-                    value -> value.getProducts().size()
-            ));
-    /*     System.out.println(countMap);*/
+        //  11. Получите данные Map<Long, Integer> → key - id заказа, value - кол-во товаров в заказе
+        Map<Long, Integer> countMap = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .collect(Collectors.toMap(
+                        key -> key.getId(),
+                        value -> value.getProducts().size()
+                ));
+        //     System.out.println(countMap);
 
 
-    //  12. Создайте Map<Customer, List<Order>> → key - покупатель, value - список его заказов
-    Map<Customer, List<Order>> mapOrder = customerList.stream()
-            .collect(Collectors.toMap(
-                            customer -> customer,
-                            value -> new ArrayList<>(value.getOrderds())
-                    )
-            );
-    /* System.out.println(mapOrder);*/
-    // 13. Создайте Map<Order, Double> → key - заказ, value - общая сумма продуктов заказа.
-    Map<Order, Double> mapDouble = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .collect(Collectors.toMap(
-                    order -> order,
-                    value -> value.getProducts().stream()
-                            .mapToDouble(proucts -> proucts.getPrice().doubleValue())
-                            .sum()
-            ));
-    /* System.out.println(mapDouble);*/
-    //14. Получите Map<String, List<String>> → key - категория, value - список названий товаров в категории
-    Map<String, List<String>> categoryName = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .flatMap(order -> order.getProducts().stream())
-            .collect(Collectors.toMap(
-                    key -> key.getCategory(),
-                    value -> new ArrayList<>(List.of(value.getName())),
-                    (ex, repl) -> {
-                        ex.addAll(repl);
-                        return ex;
-                    }
-            ));
+        //  12. Создайте Map<Customer, List<Order>> → key - покупатель, value - список его заказов
+        Map<Customer, List<Order>> mapOrder = customerList.stream()
+                .collect(Collectors.toMap(
+                                customer -> customer,
+                                value -> new ArrayList<>(value.getOrderds())
+                        )
+                );
+        //System.out.println(mapOrder);
+        // 13. Создайте Map<Order, Double> → key - заказ, value - общая сумма продуктов заказа.
+        Map<Order, Double> mapDouble = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .collect(Collectors.toMap(
+                        order -> order,
+                        value -> value.getProducts().stream()
+                                .mapToDouble(proucts -> proucts.getPrice().doubleValue())
+                                .sum()
+                ));
+        //System.out.println(mapDouble);
+        //14. Получите Map<String, List<String>> → key - категория, value - список названий товаров в категории
+        Map<String, List<String>> categoryName = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .flatMap(order -> order.getProducts().stream())
+                .collect(Collectors.toMap(
+                        key -> key.getCategory(),
+                        value -> new ArrayList<>(List.of(value.getName())),
+                        (ex, repl) -> {
+                            ex.addAll(repl);
+                            return ex;
+                        }
+                ));
+        //System.out.println(categoryName);
 
-    //Второй вариант для закрепления работы с дубликатами в Мапе
-    Map<String, List<String>> categoryName1 = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .flatMap(order -> order.getProducts().stream())
-            .collect(Collectors.groupingBy(
-                            Product::getCategory,
-                            Collectors.mapping(Product::getName, Collectors.toList())
-                    )
-            );
+        //Второй вариант для закрепления работы с дубликатами в Мапе
+        Map<String, List<String>> categoryName1 = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .flatMap(order -> order.getProducts().stream())
+                .collect(Collectors.groupingBy(
+                                Product::getCategory,
+                                Collectors.mapping(Product::getName, Collectors.toList())
+                        )
+                );
 
-      /*  System.out.println(categoryName);
-        System.out.println(categoryName1);*/
+        //  System.out.println(categoryName);
+        //  System.out.println(categoryName1);
 
-    // 15 Получите Map<String, Product> → самый дорогой продукт по каждой категории.*/
-    Map<String, Product> products = customerList.stream()
-            .flatMap(customer -> customer.getOrderds().stream())
-            .flatMap(order -> order.getProducts().stream())
-            .collect(Collectors.toMap(
-                            Product::getCategory,
-                            product -> product,
-                            (ex, repl) ->
-                                    ex.getPrice().compareTo(repl.getPrice()) > 0 ? ex : repl
-                    )
-            );
-    /*    System.out.println(products);*/
+        // 15 Получите Map<String, Product> → самый дорогой продукт по каждой категории.*/
+        Map<String, Product> products = customerList.stream()
+                .flatMap(customer -> customer.getOrderds().stream())
+                .flatMap(order -> order.getProducts().stream())
+                .collect(Collectors.toMap(
+                                Product::getCategory,
+                                product -> product,
+                                (ex, repl) ->
+                                        ex.getPrice().compareTo(repl.getPrice()) > 0 ? ex : repl
+                        )
+                );
+        //System.out.println(products);
+    }
 }
