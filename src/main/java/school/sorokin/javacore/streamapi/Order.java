@@ -1,14 +1,16 @@
 package school.sorokin.javacore.streamapi;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Order {
 
-    private final  Long id;
+    private final Long id;
 
-    private final   LocalDate orderDate;
+    private final LocalDate orderDate;
 
     private final LocalDate deliveryDate;
 
@@ -17,13 +19,12 @@ public class Order {
     private final Set<Product> products;
 
 
-
     public Order(Long id, LocalDate orderDate, LocalDate deliveryDate, String status, Set<Product> products) {
         this.id = id;
         this.orderDate = orderDate;
         this.deliveryDate = deliveryDate;
         this.status = status;
-        this.products = products;
+        this.products = new LinkedHashSet<>(products);
     }
 
 
