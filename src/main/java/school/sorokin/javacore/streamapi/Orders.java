@@ -5,11 +5,11 @@ import java.util.Set;
 
 public class Orders {
     Products Products = new Products();
-    public Order order1 = new Order(1L, LocalDate.of(2025, 7, 10), LocalDate.of(2025, 7, 11),
+    public  Order order1 = new Order(1L, LocalDate.of(2025, 7, 10), LocalDate.of(2025, 7, 11),
             "Доставлен", Set.of(Products.product1, Products.product5, Products.product10));
-    public Order order2 = new Order(2L, LocalDate.of(2025, 7, 15), LocalDate.of(2025, 7, 16),
+    public  Order order2 = new Order(2L, LocalDate.of(2025, 7, 15), LocalDate.of(2025, 7, 16),
             "Доставлен", Set.of(Products.product2, Products.product8, Products.product15));
-    public Order order3 = new Order(3L, LocalDate.of(2025, 7, 20), LocalDate.of(2025, 7, 21),
+    public  Order order3 = new Order(3L, LocalDate.of(2025, 7, 20), LocalDate.of(2025, 7, 21),
             "Доставлен", Set.of(Products.product3, Products.product12, Products.product20));
     public Order order4 = new Order(4L, LocalDate.of(2025, 7, 25), null,
             "В обработке", Set.of(Products.product4, Products.product9));
@@ -51,9 +51,9 @@ public class Orders {
             "Доставлен", Set.of(Products.product4, Products.product10, Products.product19));
     public Order order23 = new Order(23L, LocalDate.of(2025, 8, 9), null,
             "Ожидает подтверждения", Set.of(Products.product8, Products.product14));
-    public Order order24 = new Order(24L, LocalDate.of(2025, 8, 12), LocalDate.of(2025, 8, 13),
+    public  Order order24 = new Order(24L, LocalDate.of(2025, 8, 12), LocalDate.of(2025, 8, 13),
             "Доставлен", Set.of(Products.product3, Products.product11, Products.product20));
-    public Order order25 = new Order(25L, LocalDate.of(2025, 8, 15), null,
+    public  Order order25 = new Order(25L, LocalDate.of(2025, 8, 15), null,
             "В обработке", Set.of(Products.product5, Products.product9));
 
 }

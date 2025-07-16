@@ -28,7 +28,7 @@ public class Customer {
         return level;
     }
 
-    public Set<Order> getOrderds() {
+    public Set<Order> getOrders() {
         return orders;
     }
 
@@ -36,7 +36,7 @@ public class Customer {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Customer customer = (Customer) o;
-        return id == customer.id && Objects.equals(name, customer.name) && Objects.equals(level, customer.level) && Objects.equals(orders, customer.orders);
+        return Objects.equals(id, customer.id) && Objects.equals(name, customer.name) && Objects.equals(level, customer.level) && Objects.equals(orders, customer.orders);
     }
 
     @Override
